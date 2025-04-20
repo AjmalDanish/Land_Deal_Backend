@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Land Details</title>
+  <link href="/tailwind.css" rel="stylesheet" />
+</head>
+<body class="p-6 bg-gray-100 min-h-screen">
+  <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <img src="/uploads/<%= land.image %>" class="w-full h-80 object-cover" />
+
+    <div class="p-6">
+      <h1 class="text-2xl font-bold mb-2">₹ <%= land.price %></h1>
+      <p class="text-gray-700 mb-4"><%= land.address %></p>
+
+      <div class="mb-4">
+        <strong>Contact Seller:</strong>
+        <a href="tel:<%= land.contact %>" class="text-blue-600 block"><%= land.contact %></a>
+      </div>
+
+      <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-600">
+        <!-- Placeholder for Google Map -->
+        <!-- Google Maps API -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+        <script>
+        function initMap() {
+            const loc = { lat: <%= land.lat %>, lng: <%= land.lng %> };
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: loc,
+            });
+
+            new google.maps.Marker({
+            position: loc,
+            map,
+            });
+        }
+
+        window.onload = initMap;
+        </script>
+      </div>
+
+      <p class="mt-6 text-sm text-gray-500 italic">
+        Deal directly with the seller. No third party involved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

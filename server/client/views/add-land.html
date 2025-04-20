@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Land</title>
+  <link href="/tailwind.css" rel="stylesheet" />
+  <style>
+    #map {
+      height: 300px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body class="p-6 bg-gray-100 min-h-screen">
+  <div class="max-w-xl mx-auto bg-white shadow-md rounded-xl p-6">
+    <h1 class="text-2xl font-bold mb-4">Add Land Listing</h1>
+
+    <form id="landForm" enctype="multipart/form-data" class="space-y-4">
+      <div>
+        <label class="block font-medium mb-1">Land Photo</label>
+        <input type="file" name="image" required class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Full Address</label>
+        <input type="text" id="autocomplete" name="address" required class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <div id="map" class="rounded-lg border"></div>
+
+      <input type="hidden" name="lat" id="lat" />
+      <input type="hidden" name="lng" id="lng" />
+
+      <div>
+        <label class="block font-medium mb-1">Price</label>
+        <input type="text" name="price" required class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Seller Contact</label>
+        <input type="tel" name="contact" required class="w-full border px-3 py-2 rounded" />
+      </div>
+
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Submit</button>
+    </form>
+
+    <p id="successMsg" class="text-green-600 mt-4 hidden">Submitted successfully!</p>
+  </div>
+
+  <!-- Google Maps API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+  <script>
+    let map, marker, autocomplete;
+
+    function initMap() {
+      const defaultLocation = { lat: 22.535, lng: 88.310 };
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: defaultLocation,
+        zoom: 15,
+      });
+
+      marker = new google.maps.Marker({
+        position: defaultLocation,
+        map,
+        draggable: true,
+      });
+
+      autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById("autocomplete")
+      );
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        const loc = place.geometry.location;
+        map.setCenter(loc);
+        marker.setPosition(loc);
+        updateLatLng(loc.lat(), loc.lng());
+      });
+
+      marker.addListener("dragend", () => {
+        const pos = marker.getPosition();
+        updateLatLng(pos.lat(), pos.lng());
+      });
+
+      updateLatLng(defaultLocation.lat, defaultLocation.lng);
+    }
+
+    function updateLatLng(lat, lng) {
+      document.getElementById("lat").value = lat;
+      document.getElementById("lng").value = lng;
+    }
+
+    window.onload = initMap;
+
+    // Form submit
+    const form = document.getElementById('landForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const res = await fetch('/add', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        document.getElementById('successMsg').classList.remove('hidden');
+        form.reset();
+      } else {
+        alert("Submission failed");
+      }
+    });
+  </script>
+</body>
+</html>

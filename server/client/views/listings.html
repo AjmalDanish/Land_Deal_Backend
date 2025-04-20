@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Land Listings</title>
+  <link href="/tailwind.css" rel="stylesheet" />
+</head>
+<body class="p-4 bg-gray-50 min-h-screen">
+  <h1 class="text-2xl font-bold text-center mb-6">Available Land Listings</h1>
+
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <% lands.forEach(land => { %>
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <img src="/uploads/<%= land.image %>" alt="Land Image" class="h-48 w-full object-cover" />
+        <div class="p-4">
+          <h2 class="font-semibold text-lg mb-1">₹ <%= land.price %></h2>
+          <p class="text-sm text-gray-600 mb-2"><%= land.address %></p>
+          <a href="/land/<%= land._id %>" class="inline-block mt-2 text-blue-600 font-medium">View Details →</a>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</body>
+</html>
